@@ -1,8 +1,7 @@
 
 ## Notes on Paid Digital Marketing Attribution logic
-=========================================================
 
-ToC:
+**Table of Contents:**
 
 1. Data sources & transformations
 
