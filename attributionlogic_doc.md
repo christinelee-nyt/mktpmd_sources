@@ -1,5 +1,5 @@
 
-## Notes on Paid Digital Marketing Attribution logic
+## Overview of Paid Digital Marketing Attribution logic
 
 We outline the data ingestion, preparation and attribution logic for the Paid Media Dashboard 2.0 (henceforth referred to as **PMD 2.0** in this post). 
 
@@ -60,7 +60,7 @@ We provide an overview of the key logic & operations in this script.
 
 ### the script's main functions
 
-```
+``` python
 def run_all(project, key=key, **context):
 # def run_all(start,end):
     start = datetime.strftime((context['execution_date'] -  timedelta(days=1)), '%Y-%m-%d')
