@@ -54,13 +54,13 @@ Raw media data is queried using BigQuery with the respective SQL scripts stored 
 
 ## Media impression <-> user conversion attribution logic
 
-The _media_dashboard_v2.py_ script ingests our raw media delivery & conversion data from various digital ad platforms and outputs aggregated impression and validated conversions data (that fall into select attributed windows) grouped by the key media dimensions of interest for our PMD 2.0. 
+The _media_dashboard_v2.py_ script ingests our raw media delivery & conversion data from various digital ad platforms and outputs aggregated **impression** and **validated conversions** data (validated by a join with our internally stamped SOR conversions, that also fall into select attributed windows) grouped by the key media dimensions of interest for our PMD 2.0, such as _site_. _campaign_, _placement_. 
 
-We provide an overview of the key logic & operations in this script. 
+We provide an brief overview of the key logic & operations in this script. 
 
 ### the script's main functions
 
-``` python
+```python
 def run_all(project, key=key, **context):
 # def run_all(start,end):
     start = datetime.strftime((context['execution_date'] -  timedelta(days=1)), '%Y-%m-%d')
