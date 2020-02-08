@@ -75,7 +75,7 @@ def run_all(project, key=key, **context):
     media_data_meta = parse_meta(media_data, kepler_master)
 ```
 
-### Subtitle
+### Functions to pull raw data
 
 Text
 
@@ -83,7 +83,7 @@ Text
 
 
 
-### Subtitle
+### Functions to validate & dedup conversions 
 
 Text
 
@@ -91,7 +91,14 @@ Text
 
 
 
-### Subtitle
+### Functions to transform data
+
+Text
+
+Text
+
+
+### Functions to transform data
 
 Text
 
@@ -99,15 +106,19 @@ Text
 
 
 
-## Header
+## Some questions for clarification by Marketing Analytics team
 
-### Subtitle
-
+#### Subtitle
 Text
 
+#### Subtitle
 Text
 
+#### Subtitle
+Text
 
+#### Subtitle
+Text
 
 
 
