@@ -148,7 +148,7 @@ subs_val_df = starts_validation(subs_df, sor_convs)
 There are 2 steps in this process -- 
 * first, the function validates or includes only those media platform conversions whose 'subscription_id' also show up in our internal DSSOR or sytem of record tables. 
 ```python
-starts_val = pd.merge(media_conv,sor_conv, how='inner', on='subscription_id')
+starts_val = pd.merge(subs_df, sor_conv, how='inner', on='subscription_id')
 ```
 
 * as a second step, the function de-duplicates line items with the same 'subscription_id', in other words keeping only the line item corresponding to the last 'interaction_time' in the records to avoid counting the same conversion or subscriber twice. 
@@ -189,14 +189,48 @@ def conversion_attr(starts_val):
     subs_grped_28_all['attr_window'] = '28 Day All'
     subs_grped_28_click = subs_grped_click[mask_28].groupby(grp, as_index=False).conversions.sum()
     subs_grped_28_click['attr_window'] = '28 Day Click'
+```
 
-    subs_final = pd.concat([subs_grped_1_all,
-                            subs_grped_7_all,
-                            subs_grped_28_all,
-                            subs_grped_1_click,
-                            subs_grped_7_click,
-                            subs_grped_28_click])
- ```
+Key steps:
+
+1) the subset of fields/dimensions used at the begining of this function, defined by `grp` includes:
+    - all dimensions in `imps_df` plus
+    - 'conv_window' from `subs_df` plus
+    - 'sor_prod' from `sor_conv`
+
+2) This step takes the table from the prior function - `starts_val` at the dedupped 'subscription_id' level - and creates a groupby object using the `grp`-specified dimensions, then counts the no. of unique subscriptions for each `grp` combination. 
+
+```python
+    # table for view-through-convs and click-through-convs
+    subs_grped = starts_val.groupby(grp,as_index=False).agg({'subscription_id':'nunique'})
+    subs_grped.columns = grp + ['conversions'] # renames column for "agg({'subscription_id':'nunique'})" to 'conversions'
+    
+    subs_grped_click = subs_grped[subs_grped['interaction_type'] == 'click'] # get click-through only
+```
+
+
+3) Remove 'conv_window' and 'interaction_type' from `grp` to allow for further filtering by conversion window length
+```python 
+    grp.pop(2) # remove conv window grping
+    grp.pop(-2) # remove int type grping
+```
+
+4) Create mask objects for records falling into particular conversion window lengths of interest
+```python 
+    mask_1 = subs_grped['conv_window'] <= 1
+    mask_7 = subs_grped['conv_window'] <= 7
+    mask_28 = subs_grped['conv_window'] <= 28
+```
+
+5) 
+```python 
+    subs_grped_7_all = subs_grped[mask_7].groupby(grp, as_index=False).conversions.sum()
+    subs_grped_7_all['attr_window'] = '7 Day All'
+    subs_grped_7_click = subs_grped_click[mask_7].groupby(grp, as_index=False).conversions.sum()
+    subs_grped_7_click['attr_window'] = '7 Day Click'
+```
+
+6) 
 
 
 
