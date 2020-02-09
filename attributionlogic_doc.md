@@ -106,14 +106,14 @@ Impressions dataframe contains the following fields:
 imps_columns = ['data_source','date','account','account_id','site','campaign','campaign_id',
 'placement','placement_id','_match','impressions','clicks','spend']
 ```
-![alt text](/images/image1.jpg)
+![alt text](/images/image1.png)
 
 Conversion dataframe contains the following fields: 
 ```python 
 subs_columns = ['data_source','event_date','interaction_time','conv_window','account','account_id','site','campaign','campaign_id',
 'placement','placement_id','_match','activity', 'interaction_type', 'agent_id', 'regi_id','subscription_id']
 ```
-![alt text](/images/image2.jpg)
+![alt text](/images/image2.png)
 
 
 Media conversion dataframe contains the following fields: 
@@ -170,4 +170,4 @@ Ans:
 
 Ans:
 
------------
+--------------------------------------------------------
