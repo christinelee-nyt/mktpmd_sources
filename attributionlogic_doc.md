@@ -223,6 +223,11 @@ Key steps:
 ```
 
 5) 
+Apply the 'conv_window' masks from above to the original `subs_grped` table now grouped by using a revised `grp` field list, then for each `grp` line item sum up the number of conversions for each segment. 
+
+Then add a new column specifying the 'attr_window' for each conversion record. 
+
+7-day window example: 
 ```python 
     subs_grped_7_all = subs_grped[mask_7].groupby(grp, as_index=False).conversions.sum()
     subs_grped_7_all['attr_window'] = '7 Day All'
@@ -230,9 +235,16 @@ Key steps:
     subs_grped_7_click['attr_window'] = '7 Day Click'
 ```
 
-6) 
+6) Concatenating all tables created below into a final table `subs_final`. 
 
-
+```python 
+    subs_final = pd.concat([subs_grped_1_all,
+                            subs_grped_7_all,
+                            subs_grped_28_all,
+                            subs_grped_1_click,
+                            subs_grped_7_click,
+                            subs_grped_28_click])
+```
 
 
 ### iv. Functions to transform and merge imps <> attributed conversions
@@ -244,7 +256,6 @@ Text
 ### v. Functions to map media dimensions IDs to taxonomy meta data
 
 Text
-
 
 
 ## Some questions for clarification by Marketing Analytics team
