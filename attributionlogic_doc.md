@@ -54,7 +54,7 @@ Raw media data is queried using BigQuery with the respective SQL scripts stored 
 
 ## Media impression <-> user conversion attribution logic
 
-The _media_dashboard_v2.py_ script ingests our raw media delivery & conversion data from various digital ad platforms and outputs aggregated **impression** and **validated conversions** data (validated by a join with our internally stamped SOR conversions, that also fall into select attributed windows) grouped by the key media dimensions of interest for our PMD 2.0, such as _site_. _campaign_, _placement_. 
+The _media_dashboard_v2.py_ script ingests our raw media delivery & conversion data from various digital ad platforms and outputs aggregated **impression** and **validated conversions** data (validated by a join with our internally stamped SOR conversions, that also fall into select attributed window durations) that are grouped by key media dimensions of interest for our PMD 2.0 dashboard filters, such as _site_, _campaign_, _placement_ etc.. 
 
 We provide an brief overview of the key logic & operations in this script. 
 
@@ -76,7 +76,15 @@ def run_all(project, key=key, **context):
     media_data = merge_media_data(imps_df, subs_final)
     media_data_meta = parse_meta(media_data, kepler_master)
 ```
-### setup
+### Setup to process .py file
+
+Required BQ table access needed - ask BQ Slack channel for user access:
+```
+nytdata.twitter_ads.*
+nytdata.fb_insights.*
+nyt-bigquery-beta-workspace.paid_media_data.*
+nyt-octopus-prd.snapchat.*
+```
 
 Besides installing the relevant python libraries for this script, we also need to store a `hash_key` as an environment variable before we can process functions in the converstion validation section. 
 
@@ -89,11 +97,24 @@ The `key` variable storing the hash key in our environment variable is used in t
 sor_conv['sor_sub_id'].apply(lambda x: create_signature(x, key))
 ```
 
-### i. Functions to pull raw data
+### i. Function to pull and process raw media data
 
-Text
+Impressions dataframe contains the following fields: 
+```python 
+imps_columns = ['data_source','date','account','account_id','site','campaign','campaign_id',
+'placement','placement_id','_match','impressions','clicks','spend']
+```
 
+Conversion dataframe contains the following fields: 
+```python 
+subs_columns = ['data_source','event_date','interaction_time','conv_window','account','account_id','site','campaign','campaign_id',
+'placement','placement_id','_match','activity', 'interaction_type', 'agent_id', 'regi_id','subscription_id']
+```
 
+Media conversion dataframe contains the following fields: 
+```python 
+media_subs_columns = ['_match','account','account_id','attr_window','campaign','campaign_id','data_source','date','placement','placement_id','site','sor_prod','view_conv','click_conv']
+```
 
 ### ii. Functions to validate & dedup conversions 
 
@@ -124,8 +145,9 @@ Text
 
 ## Some questions for clarification by Marketing Analytics team
 
-#### Subtitle
-Text
+[ ] Q. In section 1 under pull_data() function, `media_subs_df` was recently added in February 2020. How is this new media conversion dataframe different from the existing conversion dataframe `subs_df`? 
+
+A. 
 
 #### Subtitle
 Text
