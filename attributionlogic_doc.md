@@ -1,8 +1,9 @@
 
-## Overview of Paid Digital Marketing Attribution logic
+## Overview of Paid Digital Marketing Attribution process
 
 We outline the data ingestion, preparation and attribution logic for the Paid Media Dashboard 2.0 (henceforth referred to as **PMD 2.0** in this post). 
-Refer to the [Github repo here] (https://github.com/nytm/dig-mkt/tree/develop/dags/media_dashboard). 
+
+Please refer to the [Github repo here](https://github.com/nytm/dig-mkt/tree/develop/dags/media_dashboard). 
 
 
 **Sections:**
@@ -27,8 +28,7 @@ Existing ingested paid media data sources for PMD 2.0 can be grouped into the fo
 
 Raw media data is queried using BigQuery with the respective SQL scripts stored in `*.sql` files under the `sql_v2` folder. 
 
-`dig-mkt/dags/media_dashboard/` repo:
-
+`dig-mkt/dags/media_dashboard/` repo contains: 
 ```
 /media_dashboard   
 │   media_dashboard_v2.py
