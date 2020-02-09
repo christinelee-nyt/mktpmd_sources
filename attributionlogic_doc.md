@@ -101,7 +101,9 @@ sor_conv['sor_sub_id'].apply(lambda x: create_signature(x, key))
 
 ### i. Function to pull and process raw media data
 
-Impressions dataframe contains the following fields: 
+The `get_data_all(start, end)` function takes media data output (queried in a prior step using various BigQuery/SQL scripts) and assigns the data output to a Pandas dataframe, respectively in `imps_df`,`subs_df`, `sor_convs`, `kepler_master`, `kepler_search_master`. 
+
+The impressions dataframe contains the following fields: 
 ```python 
 imps_columns = ['data_source','date','account','account_id','site','campaign','campaign_id',
 'placement','placement_id','_match','impressions','clicks','spend']
@@ -115,25 +117,88 @@ subs_columns = ['data_source','event_date','interaction_time','conv_window','acc
 ```
 ![alt text](/images/image2.png)
 
+Conversion "events" or "activity" pixels include the following:
+``` python
+list(subs_df['activity'].unique())
+
+['Digital Subscription Conversion Page',
+ 'Regi Conversion Pixel',
+ 'Crossword - Conversion Page',
+ 'Gifting Conversion Page',
+ 'Home Delivery Subscription Conversion Page',
+ 'EDU Digi Subscription Page',
+ 'Cooking - Free Trial',
+ 'Cooking Conversion - 061317',
+ 'Cooking Gift Conversion',
+ 'Crossword Gift Conversion',
+ 'OLR Subscription']
+```
 
 Media conversion dataframe contains the following fields: 
 ```python 
 media_subs_columns = ['_match','account','account_id','attr_window','campaign','campaign_id','data_source','date','placement','placement_id','site','sor_prod','view_conv','click_conv']
 ```
 
-### ii. Functions to validate & dedup conversions 
+### ii. Function to validate & dedup conversions 
 
-Text
+```python
+subs_val_df = starts_validation(subs_df, sor_convs)
+```
 
-Text
+There are 2 steps in this process -- 
+* first, the function validates or includes only those media platform conversions whose 'subscription_id' also show up in our internal DSSOR or sytem of record tables. 
+```python
+starts_val = pd.merge(media_conv,sor_conv, how='inner', on='subscription_id')
+```
+
+* as a second step, the function de-duplicates line items with the same 'subscription_id', in other words keeping only the line item corresponding to the last 'interaction_time' in the records to avoid counting the same conversion or subscriber twice. 
+```python
+starts_val = starts_val.sort_values(['subscription_id','interaction_time'], ascending=True).drop_duplicates(subset='subscription_id', keep='last')
+```
+
+### iii. Function for filtering conversions falling within certain timeframe windows 
+
+The purpose of this step is to bucket the validated conversions (from the prior step) into various 'conv_window' & filter out conversions falling into certain attributed windows of interest. 
+
+```python
+def conversion_attr(starts_val):
+    grp = ['data_source','date','conv_window','account','account_id','site','campaign','campaign_id',
+    'placement','placement_id','_match','interaction_type','sor_prod']
+    
+    subs_grped = starts_val.groupby(grp,as_index=False).agg({'subscription_id':'nunique'})
+    subs_grped.columns = grp + ['conversions']
+    subs_grped_click = subs_grped[subs_grped['interaction_type'] == 'click'] # get click only
+    grp.pop(2) # remove conv window grping
+    grp.pop(-2) # remove int type grping
+
+    mask_1 = subs_grped['conv_window'] <= 1
+    mask_7 = subs_grped['conv_window'] <= 7
+    mask_28 = subs_grped['conv_window'] <= 28
+
+    subs_grped_1_all = subs_grped[mask_1].groupby(grp, as_index=False).conversions.sum()
+    subs_grped_1_all['attr_window'] = '1 Day All'
+    subs_grped_1_click = subs_grped_click[mask_1].groupby(grp, as_index=False).conversions.sum()
+    subs_grped_1_click['attr_window'] = '1 Day Click'
+
+    subs_grped_7_all = subs_grped[mask_7].groupby(grp, as_index=False).conversions.sum()
+    subs_grped_7_all['attr_window'] = '7 Day All'
+    subs_grped_7_click = subs_grped_click[mask_7].groupby(grp, as_index=False).conversions.sum()
+    subs_grped_7_click['attr_window'] = '7 Day Click'
+
+    subs_grped_28_all = subs_grped[mask_28].groupby(grp, as_index=False).conversions.sum()
+    subs_grped_28_all['attr_window'] = '28 Day All'
+    subs_grped_28_click = subs_grped_click[mask_28].groupby(grp, as_index=False).conversions.sum()
+    subs_grped_28_click['attr_window'] = '28 Day Click'
+
+    subs_final = pd.concat([subs_grped_1_all,
+                            subs_grped_7_all,
+                            subs_grped_28_all,
+                            subs_grped_1_click,
+                            subs_grped_7_click,
+                            subs_grped_28_click])
+ ```
 
 
-
-### iii. Function to 
-
-Text
-
-Text
 
 
 ### iv. Functions to transform and merge imps <> attributed conversions
