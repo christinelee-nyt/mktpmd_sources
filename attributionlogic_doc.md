@@ -2,12 +2,14 @@
 ## Overview of Paid Digital Marketing Attribution logic
 
 We outline the data ingestion, preparation and attribution logic for the Paid Media Dashboard 2.0 (henceforth referred to as **PMD 2.0** in this post). 
+Refer to the [Github repo here] (https://github.com/nytm/dig-mkt/tree/develop/dags/media_dashboard). 
+
 
 **Sections:**
 
-1. Data feeds: Digital media data sources & transformations
+1. Data source queries : Digital media data sources & transformations
 
-2. Attribution logic in _media_dashboard_v2.py_: mapping media delivery to validated conversions
+2. Attribution logic: mapping media delivery to validated conversions
 
 3. Daily processing & ingestion in Paid Media Dashboard v2.0
 
@@ -145,18 +147,26 @@ Text
 
 ## Some questions for clarification by Marketing Analytics team
 
-[ ] Q. In section 1 under pull_data() function, `media_subs_df` was recently added in February 2020. How is this new media conversion dataframe different from the existing conversion dataframe `subs_df`? 
+-[ ] Question: In section 1 under pull_data() function, `media_subs_df` was recently added in February 2020. How is this new media conversion dataframe different from the existing conversion dataframe `subs_df`? 
 
-A. 
+Ans:
 
-#### Subtitle
-Text
+-[ ] Question:
 
-#### Subtitle
-Text
+Ans:
 
-#### Subtitle
-Text
+-[ ] Question:
+
+Ans:
+
+-[ ] Question:
+
+Ans:
+
+-[ ] Question:
+
+Ans:
 
 
-
+End of post
+-----------
