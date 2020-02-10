@@ -94,7 +94,8 @@ Besides installing the relevant python libraries for this script, we also need t
 key = os.environ['HASH_KEY'].strip('\n')
 ```
 
-The `key` variable storing the hash key in our environment variable is used in the `starts_validation(subs_df, sor_convs)` function to hash our unhashed `'sor_sub_id'`s from DSSOR records, to create `sor_conv['subscription_id']` used for a JOIN operation with unvalided media conversion data. 
+The `key` variable storing the hash key in our environment variable is used in the `starts_validation(subs_df, sor_convs)` function to hash `sor_sub_id`s within our DSSOR records into a hashed `subscription_id`, which is used in a JOIN operation with unvalided media conversion data. 
+
 ```python
 sor_conv['sor_sub_id'].apply(lambda x: create_signature(x, key))
 ```
