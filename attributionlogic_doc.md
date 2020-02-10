@@ -10,12 +10,12 @@ Please refer to the [Github repo here](https://github.com/nytm/dig-mkt/tree/deve
 
 1. Data source queries : Digital media data sources & transformations
 
-2. Attribution logic: mapping media delivery to validated conversions
+2. Media <> conversion attribution logic : mapping media delivery to validated conversions
 
 3. Daily processing & ingestion in Paid Media Dashboard v2.0
 
 
-## Data feeds: Digital media data sources
+## Section 1: Digital media data sources
 
 Existing ingested paid media data sources for PMD 2.0 can be grouped into the following categories: 
 
@@ -54,7 +54,7 @@ Raw media data is queried using BigQuery with the respective SQL scripts stored 
 
 ```
 
-## Media impression <-> user conversion attribution logic
+## Section 2: Media impression <-> user conversion attribution logic
 
 The _media_dashboard_v2.py_ script ingests our raw media delivery & conversion data from various digital ad platforms and outputs aggregated **impression** and **validated conversions** data (validated by a join with our internally stamped SOR conversions, that also fall into select attributed window durations) that are grouped by key media dimensions of interest for our PMD 2.0 dashboard filters, such as _site_, _campaign_, _placement_ etc.. 
 
@@ -316,6 +316,13 @@ Final `media_data_meta` data table:
 ![alt text](/images/image3.png)
 
 ![alt text](/images/image4.png)
+
+
+## Section 3: Automated processing & ingestion in Paid Media Dashboard v2.0
+
+T.B.D.
+
+
 
 ----------------------------------------------------------------------------------------------------------------------
 
