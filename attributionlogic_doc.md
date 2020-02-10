@@ -258,17 +258,17 @@ Text
 Text
 
 
-## Some questions for clarification by Marketing Analytics team
+## Other onboarding questions to Marketing Analytics team
 
--[ ] Question: In section 1 under pull_data() function, `media_subs_df` was recently added in February 2020. How is this new media conversion dataframe different from the existing conversion dataframe `subs_df`? 
-
-Ans:
-
--[ ] Question:
+-[ ] Question: In section 1 under pull_data() function, `media_subs_df` was recently added in February 2020. What is the purpose of this addition, how is this new media conversion dataframe different from the existing conversion dataframe `subs_df`? 
 
 Ans:
 
--[ ] Question:
+-[ ] Question: Assuming we have a most basic knowledge of Airflow, can you help me understand what Airflow elements/commands within our code allow how our PMD python script _media_dashboard_v2.py_ to be processed in Airflow? 
+
+Ans:
+
+-[ ] Question: How can we get an introduction / training on Octopus? 
 
 Ans:
 
