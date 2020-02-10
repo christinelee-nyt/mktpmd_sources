@@ -101,9 +101,9 @@ sor_conv['sor_sub_id'].apply(lambda x: create_signature(x, key))
 
 ### i. Function to pull and process raw media data
 
-The `get_data_all(start, end)` function takes media data output (queried in a prior step using various BigQuery/SQL scripts) and assigns the data output to a Pandas dataframe, respectively in `imps_df`,`subs_df`, `sor_convs`, `kepler_master`, `kepler_search_master`. 
+The `get_data_all(start, end)` function takes media data (queried in a prior step using various SQL scripts) and assigns the data output to a Pandas dataframe, respectively to `imps_df`,`subs_df`, `sor_convs`, `kepler_master`, `kepler_search_master`. 
 
-The impressions dataframe contains the following fields: 
+The impressions dataframe `imps_df` contains the following fields: 
 ```python 
 imps_columns = ['data_source','date','account','account_id','site','campaign','campaign_id',
 'placement','placement_id','_match','impressions','clicks','spend']
