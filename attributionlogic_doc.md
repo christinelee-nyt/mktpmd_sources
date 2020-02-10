@@ -212,7 +212,7 @@ Key steps:
 3) Remove 'conv_window' and 'interaction_type' from `grp` to allow for further filtering by conversion window length
 ```python 
     grp.pop(2) # remove conv window grping
-    grp.pop(-2) # remove int type grping
+    grp.pop(-2) # remove interaction type grping
 ```
 
 4) Create mask objects for records falling into particular conversion window lengths of interest
@@ -223,9 +223,9 @@ Key steps:
 ```
 
 5) 
-Apply the 'conv_window' masks from above to the original `subs_grped` table now grouped by using a revised `grp` field list, then for each `grp` line item sum up the number of conversions for each segment. 
+Apply the 'conv_window' masks from above to the original `subs_grped` table now grouped by using the above revised `grp` field list (by removing 'conv_window' and 'interaction_type' from the groupby object in `grp`), then for each `grp` record sum up the number of conversions for that line item. 
 
-Then add a new column specifying the 'attr_window' for each conversion record. 
+Next, add a new column specifying the 'attr_window' for each conversion record, such as '7 Day All' or '7 Day Click' for those conversions that fall within 7 days of media exposure. 
 
 7-day window example: 
 ```python 
@@ -235,7 +235,7 @@ Then add a new column specifying the 'attr_window' for each conversion record.
     subs_grped_7_click['attr_window'] = '7 Day Click'
 ```
 
-6) Concatenating all tables created below into a final table `subs_final`. 
+6) Concatenating all tables created below into a final table named `subs_final`. 
 
 ```python 
     subs_final = pd.concat([subs_grped_1_all,
@@ -246,37 +246,111 @@ Then add a new column specifying the 'attr_window' for each conversion record.
                             subs_grped_28_click])
 ```
 
+### iv. Function to merge imps <> attributed conversions for DCM and other platforms
 
-### iv. Functions to transform and merge imps <> attributed conversions
+We now join the above step's `subs_final` table of validated, conversion-window-attributed conversions with their corresponding media impression record in `imps_dcm`. 
 
-Text
+This is performed by conducting an outer join of the two tables on `merge_grp` as the key. `merge_grp` contains select media dimensions of interest, the lowest level for which is at the `placement` or `_match` level. 
 
+The `merge_media_data(imps_df, subs_final)` function returns `media_data` as the output table. 
 
+```python 
+merge_grp = ['data_source','date','account','account_id','site','campaign','campaign_id','placement','placement_id','_match']
 
-### v. Functions to map media dimensions IDs to taxonomy meta data
+dcm_data = pd.DataFrame(columns=['data_source', 'date', 'account', 'account_id', 'site', 'campaign',
+                                    'campaign_id', 'placement', 'placement_id', '_match', 'impressions',
+                                    'clicks', 'spend', 'attr_window', 'conversions', 'sor_prod'])
+...
 
-Text
+for w in subs_dcm['attr_window'].unique():
+    for sp in subs_dcm['sor_prod'].unique():
+        mask = (subs_dcm['attr_window'] == w) & (subs_dcm['sor_prod'] == sp)
+        tmp = pd.merge(imps_dcm,subs_dcm[mask],how='outer', on=merge_grp)
+        
+...
+def merge_media_data(imps_df, subs_final):
+    fb_data = merge_fb(imps_df, subs_final)
+    dcm_data = merge_dcm(imps_df, subs_final)
+    media_data = pd.concat([fb_data, dcm_data])
 
+    return media_data                                
+```
 
-## Other onboarding questions to Marketing Analytics team
+### v. Last step maps media dimensions IDs to taxonomy meta data
 
--[ ] Question: In section 1 under pull_data() function, `media_subs_df` was recently added in February 2020. What is the purpose of this addition, how is this new media conversion dataframe different from the existing conversion dataframe `subs_df`? 
+This last function takes `media_data` records (containing impressions + conversions) and appends more descriptive media/campaign taxonomy metadata to each record. 
+
+```python
+def parse_meta(media_data, parse_df, 
+               mkt_subinitiative_dict=mkt_subinitiative_dict,
+               mkt_initiative_dict=mkt_initiative_dict,
+               mkt_geography_dict=mkt_geography_dict,
+               tgt_geography_dict=tgt_geography_dict,
+               channel_dict=channel_dict,
+               platform_dict=platform_dict
+               ):
+
+    media_data_meta = pd.merge(media_data, parse_df, how='left', on='_match')
+```
+
+This is the list of campaign metadata dimensions appended to our final output data:
+```python
+media_data_meta.columns
+
+Index(['data_source', 'date', 'account', 'account_id', 'site', 'campaign',
+       'campaign_id', 'placement', 'placement_id', '_match', 'impressions',
+       'clicks', 'spend', 'attr_window', 'conversions', 'sor_prod', 'channel',
+       'platform', 'marketing_subinitiative', 'marketing_initiative',
+       'marketing_geography', 'targeting_geography', 'campaign_objective',
+       'funnel_depth_category', 'time_code', 'bid_type',
+       'targeting_data_categorya', 'targeting_data_providera',
+       'targeting_data_categoryb', 'targeting_data_providerb',
+       'targeting_data_description', 'buying_type', 'creative_concept',
+       'creative_version', 'creative_file_type', 'kdip', 'marketing_segment'],
+      dtype='object')
+
+```
+
+Final `media_data_meta` data table:
+
+![alt text](/images/image3.png)
+
+![alt text](/images/image4.png)
+
+----------------------------------------------------------------------------------------------------------------------
+
+## FAQ/ Other questions to Marketing Analytics team
+
+-[ ] Question: In section 1 under pull_data() function, `media_subs_df` was recently added in February 2020. What is the purpose of this data source addition, how is this media conversion dataset different from the existing conversion dataframe `subs_df`? 
 
 Ans:
 
--[ ] Question: Assuming we have a most basic knowledge of Airflow, can you help me understand what Airflow elements/commands within our code allow how our PMD python script _media_dashboard_v2.py_ to be processed in Airflow? 
+-[ ] Question: Assuming we have only a most basic knowledge of what Airflow is used for, can you help me understand which Airflow elements/commands within our script allow _media_dashboard_v2.py_ to be processed properly in Airflow? Is there anything we need to be careful when scripting this data source & attribution process in Python whenever we work with Airflow/Cloud composer? 
 
 Ans:
 
--[ ] Question: How can we get an introduction / training on Octopus? 
+-[ ] Question: What is the best way to get an introduction to/ training on Octopus? 
 
 Ans:
 
--[ ] Question:
+-[ ] Question: What are the main next steps for adding a new data source/media platform to our PMD data querying/attribution processing workflow? Which other teams would we need to collaboration with for this process? 
 
 Ans:
 
--[ ] Question:
+-[ ] Question: 
+
+Among the media metadata dimensions, which is considered the lowest dimension of granularity -- `placement` or `_match`? When would `_match` be relied on beyond the PMD python script or in the dashboard? 
+
+For other channels such as Paid Search, App marketing, Audio channels, is `placement` or `_match` the lowest dimension of granularity for campaign analysis purposes? 
+
+Ans:
+
+
+-[ ] Question: 
+
+Ans:
+
+-[ ] Question: 
 
 Ans:
 
