@@ -321,23 +321,23 @@ Final `media_data_meta` data table:
 
 ## FAQ/ Other questions to Marketing Analytics team
 
--[ ] Question: In section 1 under pull_data() function, `media_subs_df` was recently added in February 2020. What is the purpose of this data source addition, how is this media conversion dataset different from the existing conversion dataframe `subs_df`? 
+- [ ] Question: In section 1 under pull_data() function, `media_subs_df` was recently added in February 2020. What is the purpose of this data source addition, how is this media conversion dataset different from the existing conversion dataframe `subs_df`? 
 
 Ans:
 
--[ ] Question: Assuming we have only a most basic knowledge of what Airflow is used for, can you help me understand which Airflow elements/commands within our script allow _media_dashboard_v2.py_ to be processed properly in Airflow? Is there anything we need to be careful when scripting this data source & attribution process in Python whenever we work with Airflow/Cloud composer? 
+- [ ] Question: Assuming we have only a most basic knowledge of what Airflow is used for, can you help me understand which Airflow elements/commands within our script allow _media_dashboard_v2.py_ to be processed properly in Airflow? Is there anything we need to be careful when scripting this data source & attribution process in Python whenever we work with Airflow/Cloud composer? 
 
 Ans:
 
--[ ] Question: What is the best way to get an introduction to/ training on Octopus? 
+- [ ] Question: What is the best way to get an introduction to/ training on Octopus? 
 
 Ans:
 
--[ ] Question: What are the main next steps for adding a new data source/media platform to our PMD data querying/attribution processing workflow? Which other teams would we need to collaboration with for this process? 
+- [ ] Question: What are the main next steps for adding a new data source/media platform to our PMD data querying/attribution processing workflow? Which other teams would we need to collaboration with for this process? 
 
 Ans:
 
--[ ] Question: 
+- [ ] Question: 
 
 Among the media metadata dimensions, which is considered the lowest dimension of granularity -- `placement` or `_match`? When would `_match` be relied on beyond the PMD python script or in the dashboard? 
 
@@ -346,11 +346,11 @@ For other channels such as Paid Search, App marketing, Audio channels, is `place
 Ans:
 
 
--[ ] Question: 
+- [ ] Question: 
 
 Ans:
 
--[ ] Question: 
+- [ ] Question: 
 
 Ans:
 
