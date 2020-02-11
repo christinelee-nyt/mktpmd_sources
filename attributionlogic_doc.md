@@ -341,7 +341,7 @@ Ans:
 
 Ans:
 
-- [ ] **Question**: What are the main next steps for adding a new data source/media platform to our PMD data querying/attribution processing workflow? Which other teams would we need to collaboration with for this process? 
+- [ ] **Question**: What are the main next steps for adding a new data source/media platform to our PMD data querying/attribution processing workflow? Which other teams would we need to collaborate with for this process? 
 
 Ans:
 
